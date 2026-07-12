@@ -173,7 +173,7 @@
       <section id="splitter" class="tab-panel">
         <div class="panel-header">
           <h2>Kelime Grubu Bölme</h2>
-          <p>Kelimelerin arasına tıklayarak kelime gruplarını ayırın ( / sembolü koyun), ardından her gruba öğe atayın.</p>
+          <p>Kelimelerin arasındaki <strong>+</strong> düğmelerine dokunarak bölme noktası ekleyin veya kaldırın, ardından her gruba öğe atayın.</p>
         </div>
 
         <div class="alert-banner">
@@ -198,8 +198,8 @@
 
         <div class="glass-card">
           <div class="workspace-container">
-            <div class="sentence-container word-split-mode" id="splitter-sentence-box">
-              <!-- Single words with click targets will be rendered here -->
+            <div class="sentence-container" id="splitter-sentence-box">
+              <!-- Words and touch-friendly split divider buttons render here -->
             </div>
             
             <div style="display: flex; gap: 1rem; margin-top: 1rem;">
@@ -284,10 +284,10 @@
         <div class="glass-card" id="custom-card" style="display: none;">
           <div class="builder-workspace">
             <div class="builder-helper-text" id="custom-helper-text">
-              1. Aşama: Kelimelerin arasına tıklayarak grupları belirleyin (bölme koyun). İşiniz bittiğinde buton ile onaylayın.
+              1. Aşama: Kelimelerin arasındaki + düğmelerine dokunarak bölme noktalarını belirleyin. İşiniz bittiğinde buton ile onaylayın.
             </div>
             
-            <div class="sentence-container word-split-mode" id="custom-sentence-box" style="margin-bottom: 2rem;"></div>
+            <div class="sentence-container" id="custom-sentence-box" style="margin-bottom: 2rem;"></div>
 
             <div style="display: flex; gap: 1rem;" id="custom-controls-1">
               <button class="btn-primary" id="custom-confirm-split">Grupları Onayla</button>
@@ -456,8 +456,8 @@
       <!-- 6. WORKSHEET GENERATOR TAB -->
       <section id="worksheet" class="tab-panel">
         <div class="panel-header">
-          <h2>Çalışma Kağıdı Üretici</h2>
-          <p>Seçeceğiniz zorluk seviyesine göre rastgele 15 cümleden oluşan, çıktı almaya veya PDF olarak kaydetmeye uygun çalışma kağıdı üretin.</p>
+          <h2>Çalışma Kağıdı Hazırlayıcı</h2>
+          <p>Seçeceğiniz zorluk seviyesine göre 150 cümlelik veritabanından rastgele 15 cümle seçerek çıktı almaya veya PDF olarak kaydetmeye uygun çalışma kağıdı hazırlayın.</p>
         </div>
 
         <div class="control-bar no-print">
@@ -472,7 +472,7 @@
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
               </svg>
-              Yeni Cümleler Üret
+              Yeni Cümleler Seç
             </button>
             <button class="btn-secondary" id="worksheet-print-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -504,7 +504,7 @@
             </div>
 
             <div class="worksheet-sentences-list" id="worksheet-preview-list">
-              <!-- 15 random sentences rendered here dynamically -->
+              <!-- 15 database sentences rendered here dynamically -->
             </div>
             
             <div class="worksheet-footer">

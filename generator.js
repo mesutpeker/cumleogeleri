@@ -1,125 +1,175 @@
-// Turkish Thematic Dynamic Sentence Generator Module
-// Each theme guarantees that ANY random combination of its words produces a meaningful sentence.
-// Design principles:
-//   - Every verb works with every object in the same theme
-//   - Every subject can perform every verb in the same theme
-//   - Every location is plausible for every action in the same theme
-//   - Every adverb is appropriate for every verb in the same theme
-//   - All verbs are 3rd person singular (di'li geçmiş zaman)
-//   - All subjects are singular
-//   - All dolaylı tümleç use locative case (-da/-de) for universal compatibility
-
-const generatorThemes = [
-  {
-    name: "Okul ve Öğrenme",
-    ozne: ["öğretmenimiz", "çalışkan öğrenci", "küçük Elif", "meraklı Ahmet", "sınıf başkanı", "edebiyat öğretmeni", "sessiz çocuk", "yeni öğrenci", "zeki kız", "küçük Mehmet"],
-    zarf: ["dikkatle", "sessizce", "heyecanla", "sabırla", "büyük bir özenle", "yüksek sesle", "ilgiyle", "hızla", "gülerek", "tek başına"],
-    dolayli: ["sınıfta", "kütüphanede", "evde", "odasında", "bahçede", "masanın başında", "okul kantininde", "koridorda", "teneffüste", "salonda"],
-    nesne: ["ödevini", "güzel şiiri", "kısa yazıyı", "uzun hikâyeyi", "yeni konuyu", "eski masalı", "deney raporunu", "mektubunu", "araştırma ödevini", "proje çalışmasını"],
-    yuklem: ["okudu", "yazdı", "bitirdi", "hazırladı", "kontrol etti", "tekrarladı", "tamamladı", "inceledi", "paylaştı", "sundu"]
-  },
-  {
-    name: "Aile ve Mutfak",
-    ozne: ["annem", "babam", "ablam", "büyükannem", "küçük kardeşim", "teyzem", "dedem", "komşumuz", "amcam", "dayım"],
-    zarf: ["gülerek", "seve seve", "telaşla", "özenle", "mutlu bir şekilde", "sabırla", "neşeyle", "erken saatte", "akşamüstü", "hemen"],
-    dolayli: ["mutfakta", "salonda", "bahçede", "balkonda", "sofrada", "evde", "yemek odasında", "verandada", "çardakta", "tezgâhın başında"],
-    nesne: ["lezzetli yemeği", "sıcak çorbayı", "güzel pastayı", "taze ekmeği", "soğuk meyve suyunu", "sıcak çayı", "nefis böreği", "tatlı kurabiyeyi", "mis gibi kahveyi", "taze salatasını"],
-    yuklem: ["hazırladı", "getirdi", "ikram etti", "tattı", "paylaştı", "pişirdi", "taşıdı", "servis etti", "sundu", "dağıttı"]
-  },
-  {
-    name: "Park ve Oyun",
-    ozne: ["neşeli çocuk", "küçük Ali", "minik Zeynep", "yaramaz kardeşim", "komşunun oğlu", "afacan kız", "kıvırcık saçlı çocuk", "en küçük arkadaşım", "cesur çocuk", "utangaç kız"],
-    zarf: ["neşeyle", "hızla", "kahkahalarla", "koşarak", "coşkuyla", "sevinçle", "büyük bir heyecanla", "zıplayarak", "gülümseyerek", "yarışarak"],
-    dolayli: ["parkta", "bahçede", "sokakta", "oyun alanında", "çimenlikte", "evin önünde", "okulun bahçesinde", "avluda", "sahilde", "kumda"],
-    nesne: ["renkli topu", "güzel uçurtmayı", "kırmızı balonu", "eski bisikleti", "büyük kovayı", "tahta arabayı", "küçük kepçeyi", "ip atlama ipini", "minik sandalı", "parlak bilyeleri"],
-    yuklem: ["buldu", "sakladı", "getirdi", "paylaştı", "taşıdı", "kaybetti", "topladı", "gösterdi", "bıraktı", "verdi"]
-  },
-  {
-    name: "Doğa ve Hayvanlar",
-    ozne: ["tatlı sincap", "küçük kuş", "sevimli köpek", "yavru kedi", "minik karınca", "şirin tavşan", "renkli papağan", "yaşlı kaplumbağa", "beyaz güvercin", "ufak kirpi"],
-    zarf: ["yavaşça", "sessizce", "neşeyle", "sabırla", "merakla", "dikkatle", "aceleyle", "usulca", "mutlu bir şekilde", "hızla"],
-    dolayli: ["ağacın altında", "bahçede", "gölün kenarında", "çimenlikte", "yuvasında", "orman yolunda", "çitin arkasında", "taşların arasında", "dalın üzerinde", "parkta"],
-    nesne: ["küçük fındığı", "kuru yaprağı", "minik tohumu", "taze çileği", "ufak kozalağı", "parlak boncuğu", "yumuşak tüyü", "küçük dalı", "renkli çiçeği", "minik böceği"],
-    yuklem: ["buldu", "aradı", "taşıdı", "sakladı", "gördü", "topladı", "kokladı", "bıraktı", "getirdi", "seçti"]
-  },
-  {
-    name: "Sanat ve El İşi",
-    ozne: ["küçük ressam", "yetenekli Ayşe", "yaratıcı çocuk", "minik sanatçı", "heyecanlı öğrenci", "usta öğretmen", "sabırlı çocuk", "genç tasarımcı", "meraklı Zeynep", "azimli öğrenci"],
-    zarf: ["büyük bir sevinçle", "özenle", "heyecanla", "keyifle", "sabırla", "dikkatle", "neşeyle", "coşkuyla", "gururla", "mutlu bir şekilde"],
-    dolayli: ["sınıfta", "atölyede", "masanın üzerinde", "resim odasında", "sergide", "stüdyoda", "bahçede", "salonda", "evde", "panoda"],
-    nesne: ["güzel tabloyu", "renkli resmi", "kâğıt çiçeği", "minik heykeli", "el işi sepeti", "özgün kolajı", "kil vazoyu", "ahşap kutuyu", "cam süsü", "renkli kartı"],
-    yuklem: ["yaptı", "boyadı", "sergiledi", "bitirdi", "hediye etti", "süsledi", "tasarladı", "tamamladı", "gösterdi", "sundu"]
-  }
+// Static worksheet sentence database.
+// The worksheet module selects from these ready-made sentences instead of building new ones.
+const worksheetSentenceDatabase = [
+  { id: 1, difficulty: "Kolay", text: "Annem sabah kahvaltısını özenle hazırladı." },
+  { id: 2, difficulty: "Kolay", text: "Kardeşim parkta renkli topunu kaybetti." },
+  { id: 3, difficulty: "Kolay", text: "Öğretmenimiz tahtaya kısa bir cümle yazdı." },
+  { id: 4, difficulty: "Kolay", text: "Minik kuş dalın üzerinde neşeyle öttü." },
+  { id: 5, difficulty: "Kolay", text: "Babam dün akşam gazeteyi dikkatle okudu." },
+  { id: 6, difficulty: "Kolay", text: "Çocuklar bahçede sessizce oyun oynadı." },
+  { id: 7, difficulty: "Kolay", text: "Köpeğimiz kapının önünde sabırla bekledi." },
+  { id: 8, difficulty: "Kolay", text: "Ablam masanın üstüne güzel çiçekler koydu." },
+  { id: 9, difficulty: "Kolay", text: "Yağmur bütün sokakları kısa sürede ıslattı." },
+  { id: 10, difficulty: "Kolay", text: "Dedem eski radyoyu dikkatle tamir etti." },
+  { id: 11, difficulty: "Kolay", text: "Küçük kedi koltuğun altında mışıl mışıl uyudu." },
+  { id: 12, difficulty: "Kolay", text: "Arkadaşım bana yeni kalemini verdi." },
+  { id: 13, difficulty: "Kolay", text: "Güneş sabahleyin dağların ardından doğdu." },
+  { id: 14, difficulty: "Kolay", text: "Bakkal amca çocuklara taze ekmek sattı." },
+  { id: 15, difficulty: "Kolay", text: "Elif sınıfta güzel bir şiir okudu." },
+  { id: 16, difficulty: "Kolay", text: "Rüzgar penceredeki perdeyi hafifçe salladı." },
+  { id: 17, difficulty: "Kolay", text: "Kuşlar sıcak ülkelere doğru göç etti." },
+  { id: 18, difficulty: "Kolay", text: "Annem vazodaki gülleri dikkatle suladı." },
+  { id: 19, difficulty: "Kolay", text: "Ali dün okul çantasını evde unuttu." },
+  { id: 20, difficulty: "Kolay", text: "Beyaz bulutlar gökyüzünde yavaşça ilerledi." },
+  { id: 21, difficulty: "Kolay", text: "Teyzem bize lezzetli kurabiyeler getirdi." },
+  { id: 22, difficulty: "Kolay", text: "Sınıf başkanı defterleri öğretmene teslim etti." },
+  { id: 23, difficulty: "Kolay", text: "Küçük çocuk kırmızı balonu sıkıca tuttu." },
+  { id: 24, difficulty: "Kolay", text: "Babam arabayı garaja dikkatle park etti." },
+  { id: 25, difficulty: "Kolay", text: "Komşumuz bahçedeki yaprakları sabah topladı." },
+  { id: 26, difficulty: "Kolay", text: "Ayşe yeni kitabını bir günde bitirdi." },
+  { id: 27, difficulty: "Kolay", text: "Kar yağışı yolları kısa zamanda kapattı." },
+  { id: 28, difficulty: "Kolay", text: "Kardeşim televizyondaki çizgi filmi izledi." },
+  { id: 29, difficulty: "Kolay", text: "Babaanne torunlarına eski masallar anlattı." },
+  { id: 30, difficulty: "Kolay", text: "Bahçedeki çiçekler ilkbaharda hızla açtı." },
+  { id: 31, difficulty: "Kolay", text: "Postacı kapıya büyük bir zarf bıraktı." },
+  { id: 32, difficulty: "Kolay", text: "Öğrenciler teneffüste koridorda sessizce bekledi." },
+  { id: 33, difficulty: "Kolay", text: "Küçük sincap ağacın dibinde fındık aradı." },
+  { id: 34, difficulty: "Kolay", text: "Annem çamaşırları balkonda güzelce kuruttu." },
+  { id: 35, difficulty: "Kolay", text: "Mehmet kardeşine oyuncak arabasını verdi." },
+  { id: 36, difficulty: "Kolay", text: "Deniz kıyısındaki çocuklar kumdan kale yaptı." },
+  { id: 37, difficulty: "Kolay", text: "Yaşlı adam bankta sessizce dinlendi." },
+  { id: 38, difficulty: "Kolay", text: "Bebek annesinin kucağında huzurla uyudu." },
+  { id: 39, difficulty: "Kolay", text: "Okul zili sabah erken çaldı." },
+  { id: 40, difficulty: "Kolay", text: "Kardeşim ödevini akşam yemeğinden önce bitirdi." },
+  { id: 41, difficulty: "Kolay", text: "Balıkçı ağlarını sabah denize attı." },
+  { id: 42, difficulty: "Kolay", text: "Kütüphaneci kitapları raflara düzgünce yerleştirdi." },
+  { id: 43, difficulty: "Kolay", text: "Küçük kız aynaya merakla baktı." },
+  { id: 44, difficulty: "Kolay", text: "Bahçıvan ağaçları yaz boyunca düzenli suladı." },
+  { id: 45, difficulty: "Kolay", text: "Pelin arkadaşlarına güzel haberini anlattı." },
+  { id: 46, difficulty: "Kolay", text: "Tren istasyona tam vaktinde geldi." },
+  { id: 47, difficulty: "Kolay", text: "Çiftçi tarladaki buğdayları yazın biçti." },
+  { id: 48, difficulty: "Kolay", text: "Küçük tavşan havucu iştahla yedi." },
+  { id: 49, difficulty: "Kolay", text: "Annem eski fotoğrafları albüme yerleştirdi." },
+  { id: 50, difficulty: "Kolay", text: "Öğrenciler bayrak töreninde saygıyla durdu." },
+  { id: 51, difficulty: "Orta", text: "Sınıfın en çalışkan öğrencisi zor soruları kısa sürede çözdü." },
+  { id: 52, difficulty: "Orta", text: "Bahçedeki yaşlı ağaç rüzgarlı gecede büyük dallarını kaybetti." },
+  { id: 53, difficulty: "Orta", text: "Annemin yaptığı sıcak çorba bütün aileye iyi geldi." },
+  { id: 54, difficulty: "Orta", text: "Okuldan dönen çocuklar sokakta neşeyle futbol oynadı." },
+  { id: 55, difficulty: "Orta", text: "Dün gece yağan yağmur sokakları kısa sürede göle çevirdi." },
+  { id: 56, difficulty: "Orta", text: "Mavi gözlü çocuk annesinin elini sıkıca tutuyordu." },
+  { id: 57, difficulty: "Orta", text: "Kütüphaneden aldığım romanı hafta sonu dikkatle okudum." },
+  { id: 58, difficulty: "Orta", text: "Kapının önündeki yaşlı adam etrafı merakla süzüyordu." },
+  { id: 59, difficulty: "Orta", text: "Büyükbabam gençliğinde bu fabrikada mühendis olarak çalışmış." },
+  { id: 60, difficulty: "Orta", text: "Aniden patlayan rüzgar masadaki kağıtları havaya uçurdu." },
+  { id: 61, difficulty: "Orta", text: "Hafta sonu arkadaşlarımızla ormandaki piknik alanına gideceğiz." },
+  { id: 62, difficulty: "Orta", text: "Gökyüzündeki kara bulutlar yaklaşan fırtınanın habercisiydi." },
+  { id: 63, difficulty: "Orta", text: "Karabaş yabancıları görünce bahçede yüksek sesle havladı." },
+  { id: 64, difficulty: "Orta", text: "Ablam üniversiteden mezun olunca büyük bir şirkette çalışacak." },
+  { id: 65, difficulty: "Orta", text: "Tiyatro oyununu izlemek için erkenden salona geldiler." },
+  { id: 66, difficulty: "Orta", text: "Karşı kıyıdan gelen tekneler limana birer birer yanaştı." },
+  { id: 67, difficulty: "Orta", text: "Doğanın kucağında geçirilen bir gün insana huzur verir." },
+  { id: 68, difficulty: "Orta", text: "Çocukluğumun geçtiği eski evi dün gibi hatırlıyorum." },
+  { id: 69, difficulty: "Orta", text: "Annemin hazırladığı pasta misafirlerden büyük beğeni topladı." },
+  { id: 70, difficulty: "Orta", text: "Yıllardır görmediğim arkadaşımı dün caddede tesadüfen gördüm." },
+  { id: 71, difficulty: "Orta", text: "Bahçedeki kuru yaprakları sabah erkenden süpürgeyle topladı." },
+  { id: 72, difficulty: "Orta", text: "Gürültüden rahatsız olan bebek sabaha kadar uyumadı." },
+  { id: 73, difficulty: "Orta", text: "Dün gece sinemada izlediğimiz film hepimizi derinden etkiledi." },
+  { id: 74, difficulty: "Orta", text: "Sokağın sonundaki eski bina dün sessizce yıkıldı." },
+  { id: 75, difficulty: "Orta", text: "Yorgun gözlerle etrafına bakan yolcu bir kenara oturdu." },
+  { id: 76, difficulty: "Orta", text: "Bu güzel haberi duyunca sevinçten havalara uçtu." },
+  { id: 77, difficulty: "Orta", text: "Sabahları spor yapmak insanın enerjisini belirgin biçimde artırır." },
+  { id: 78, difficulty: "Orta", text: "Uzun zamandır aradığım anahtarı yatağın altında buldum." },
+  { id: 79, difficulty: "Orta", text: "Okul gezisine katılan öğrenciler müzede ilgiyle dolaştı." },
+  { id: 80, difficulty: "Orta", text: "Annemin yaptığı sıcak ekmeğin kokusu bütün evi kapladı." },
+  { id: 81, difficulty: "Orta", text: "Ankara'ya gitmek üzere sabah saatlerinde yola çıktı." },
+  { id: 82, difficulty: "Orta", text: "Bizimle geziye gelmek isteyen öğrenciler buraya imza atsın." },
+  { id: 83, difficulty: "Orta", text: "Kıyıdaki balıkçılar fırtına yaklaşınca teknelerini güvenli limana çekti." },
+  { id: 84, difficulty: "Orta", text: "Pencereden içeri giren serin hava odayı kısa sürede ferahlattı." },
+  { id: 85, difficulty: "Orta", text: "Yolun kenarında bekleyen çocuk otobüse aceleyle bindi." },
+  { id: 86, difficulty: "Orta", text: "Yeni açılan sergideki tablolar ziyaretçilerin dikkatini hemen çekti." },
+  { id: 87, difficulty: "Orta", text: "Kardeşimin yaptığı küçük maket öğretmeninden tam not aldı." },
+  { id: 88, difficulty: "Orta", text: "Sabah vapurunu kaçıran yolcular iskelede bir süre bekledi." },
+  { id: 89, difficulty: "Orta", text: "Köy meydanında toplanan insanlar muhtarın konuşmasını dikkatle dinledi." },
+  { id: 90, difficulty: "Orta", text: "Yağmurdan sonra açan güneş çocukların yüzünü güldürdü." },
+  { id: 91, difficulty: "Orta", text: "Arkadaşım yarışmada kazandığı ödülü ailesine gururla gösterdi." },
+  { id: 92, difficulty: "Orta", text: "Kış hazırlığı yapan aileler pazardan bol bol sebze aldı." },
+  { id: 93, difficulty: "Orta", text: "Kalabalık salonda konuşan yazar okurlarına yeni kitabını tanıttı." },
+  { id: 94, difficulty: "Orta", text: "Gecenin sessizliğini bozan siren herkesi bir anda uyandırdı." },
+  { id: 95, difficulty: "Orta", text: "Kardeşine yardım etmek isteyen çocuk çantasını hemen hazırladı." },
+  { id: 96, difficulty: "Orta", text: "Dedemin anlattığı eski hikayeler bizi derinden etkilerdi." },
+  { id: 97, difficulty: "Orta", text: "Sahilde yürüyen insanlar gün batımını hayranlıkla izledi." },
+  { id: 98, difficulty: "Orta", text: "Yeni yapılan köprü iki mahalleyi birbirine bağladı." },
+  { id: 99, difficulty: "Orta", text: "Yarışmaya hazırlanan sporcular sabah antrenmanında çok çalıştı." },
+  { id: 100, difficulty: "Orta", text: "Okul korosundaki öğrenciler tören için güzel bir şarkı söyledi." },
+  { id: 101, difficulty: "Zor", text: "Yazarın son kitabında anlattığı olaylar okuyucunun yüreğinde derin izler bıraktı." },
+  { id: 102, difficulty: "Zor", text: "Uzun yıllar boyunca doğup büyüdüğü kasabadan ayrılmak ona çok zor geldi." },
+  { id: 103, difficulty: "Zor", text: "Beni en çok mutlu eden şey senin bu büyük başarındır." },
+  { id: 104, difficulty: "Zor", text: "Ünlü sanatçının son sergisi sanatseverler tarafından çok beğenildi." },
+  { id: 105, difficulty: "Zor", text: "İnsanlığın ortak mirası olan sanat eserlerini korumak her bireyin görevidir." },
+  { id: 106, difficulty: "Zor", text: "Güneşin batışını izlemek için çıktığımız tepeden bütün şehir masal gibi görünüyordu." },
+  { id: 107, difficulty: "Zor", text: "Uzun süredir üzerinde çalıştığımız projenin tamamlanması hepimizi derinden rahatlattı." },
+  { id: 108, difficulty: "Zor", text: "Zamanın akıp giden nehrinde kaybolan anıları taze tutmak oldukça zordur." },
+  { id: 109, difficulty: "Zor", text: "Yıllar önce kaybettiği günlüğün sararmış sayfalarında gezinirken yaşlı adam ağladı." },
+  { id: 110, difficulty: "Zor", text: "Modern insanın en büyük çıkmazı olan yalnızlık duygusu birçok esere konu olmuştur." },
+  { id: 111, difficulty: "Zor", text: "Fırtınada savrulan teknenin dalgalarla mücadelesini sahildeki insanlar korkuyla izledi." },
+  { id: 112, difficulty: "Zor", text: "Doğanın kucağında geçirilen her an insanı şehir hayatının stresinden uzaklaştırır." },
+  { id: 113, difficulty: "Zor", text: "Bir sanatçının kendi toplumunun sorunlarına kulak tıkaması düşünülemez." },
+  { id: 114, difficulty: "Zor", text: "Yolculuk sırasında pencereden süzülen ılık rüzgar içimde tarifsiz bir huzur uyandırdı." },
+  { id: 115, difficulty: "Zor", text: "Çocukluğumuzun geçtiği sokaklarda dolaşmak bize eski günleri bütün canlılığıyla hatırlattı." },
+  { id: 116, difficulty: "Zor", text: "Sınav sonuçlarının açıklanacağını duyan veliler okulun bahçesinde heyecanla toplandı." },
+  { id: 117, difficulty: "Zor", text: "Köyün girişindeki tarihi çeşmenin onarılması bölge halkını çok sevindirdi." },
+  { id: 118, difficulty: "Zor", text: "Sabaha kadar süren şiddetli yağmur dere kenarındaki evleri büyük tehlikeye soktu." },
+  { id: 119, difficulty: "Zor", text: "Yıllardır kapalı duran konağın kapıları sonunda ziyaretçilere açıldı." },
+  { id: 120, difficulty: "Zor", text: "Gecenin ilerleyen saatlerinde başlayan yoğun sis sürücülerin görüş mesafesini azalttı." },
+  { id: 121, difficulty: "Zor", text: "Kalabalığın arasından yükselen çocuk sesi herkesi bir anda sessizliğe gömdü." },
+  { id: 122, difficulty: "Zor", text: "Okul bahçesine dikilen genç fidanların büyümesini öğrenciler sabırla bekledi." },
+  { id: 123, difficulty: "Zor", text: "Düşüncelerini açıkça ifade etmek isteyen genç yazar uzun bir konuşma yaptı." },
+  { id: 124, difficulty: "Zor", text: "Kentin tarihi dokusunu korumak amacıyla belediye yeni bir proje başlattı." },
+  { id: 125, difficulty: "Zor", text: "Eski dostların yıllar sonra aynı masada buluşması hepimizi duygulandırdı." },
+  { id: 126, difficulty: "Zor", text: "Denizin üstünde yavaşça ilerleyen sis balıkçı teknelerini gözden kaybettirdi." },
+  { id: 127, difficulty: "Zor", text: "Kütüphanenin sessiz köşesinde çalışan öğrenci bütün dikkatini sınava verdi." },
+  { id: 128, difficulty: "Zor", text: "Ailesinden uzakta yaşamanın verdiği hüzün genç adamın yüzünden okunuyordu." },
+  { id: 129, difficulty: "Zor", text: "Yıllarca emek verdiği bahçenin kuruması yaşlı kadını derinden üzdü." },
+  { id: 130, difficulty: "Zor", text: "Karanlık koridorda yankılanan ayak sesleri küçük çocuğu fazlasıyla korkuttu." },
+  { id: 131, difficulty: "Zor", text: "Bilim insanlarının uzun araştırmalar sonunda ulaştığı sonuçlar herkeste büyük heyecan uyandırdı." },
+  { id: 132, difficulty: "Zor", text: "Sahneye çıkmadan önce kalbinin hızlı hızlı çarptığını açıkça hissediyordu." },
+  { id: 133, difficulty: "Zor", text: "Eski köprünün altından geçen nehrin sesi akşamları bütün mahalleyi sarardı." },
+  { id: 134, difficulty: "Zor", text: "Yoğun kar yağışı nedeniyle kapanan yollar sabah saatlerinde yeniden ulaşıma açıldı." },
+  { id: 135, difficulty: "Zor", text: "Çocukların gözlerindeki merak öğretmenin anlattığı konuyu daha da anlamlı kıldı." },
+  { id: 136, difficulty: "Zor", text: "Yarışmanın son dakikasında atılan gol bütün tribünleri sevinçten ayağa kaldırdı." },
+  { id: 137, difficulty: "Zor", text: "Uzak diyarlardan gelen haberler kasaba halkının gündemini uzun süre meşgul etti." },
+  { id: 138, difficulty: "Zor", text: "Dalgaların kıyıya vurduğu o sessiz akşamda herkes kendi düşüncelerine daldı." },
+  { id: 139, difficulty: "Zor", text: "Başarılı olmak için düzenli çalışmanın önemini öğretmenimiz her fırsatta vurgulardı." },
+  { id: 140, difficulty: "Zor", text: "Yıllardır beklenen tren istasyonunun açılması bölgedeki ulaşımı büyük ölçüde rahatlattı." },
+  { id: 141, difficulty: "Zor", text: "Kardeşinin gözlerinde beliren sevinci görünce bütün yorgunluğunu unuttu." },
+  { id: 142, difficulty: "Zor", text: "Müzedeki eski el yazmalarını inceleyen araştırmacılar tarihe ışık tutacak bilgiler buldu." },
+  { id: 143, difficulty: "Zor", text: "Sınıfın duvarlarına asılan resimler koridoru rengarenk bir sergi alanına çevirdi." },
+  { id: 144, difficulty: "Zor", text: "Gecenin sessizliğinde uzaklardan gelen tren düdüğü geçmiş günleri hatırlattı." },
+  { id: 145, difficulty: "Zor", text: "Dürüstlüğünden asla ödün vermeyen insanlar toplumda her zaman güven uyandırır." },
+  { id: 146, difficulty: "Zor", text: "Köy okulunda başlatılan kitap kampanyası kısa sürede bütün ilçeye yayıldı." },
+  { id: 147, difficulty: "Zor", text: "Yeni keşfedilen mağaranın duvarlarındaki çizimler arkeologları büyük bir heyecana sürükledi." },
+  { id: 148, difficulty: "Zor", text: "Çocukluğunda dinlediği ninnilerin melodisi yıllar sonra bile zihninde canlı kaldı." },
+  { id: 149, difficulty: "Zor", text: "Kış boyunca beklenen baharın gelişi dağ köylerine bambaşka bir canlılık getirdi." },
+  { id: 150, difficulty: "Zor", text: "Sabırla sürdürülen çalışmaların sonucunda ekip beklediği başarıya sonunda ulaştı." }
 ];
 
-// Sentence Templates by Difficulty
-const generatorTemplates = {
-  Kolay: [
-    // Özne + Nesne + Yüklem
-    { pattern: ["ozne", "nesne", "yuklem"], capitalize: [true, false, false], punc: "." },
-    // Özne + Yer Tamlayıcısı + Yüklem
-    { pattern: ["ozne", "dolayli", "yuklem"], capitalize: [true, false, false], punc: "." },
-    // Özne + Zarf Tümleci + Yüklem
-    { pattern: ["ozne", "zarf", "yuklem"], capitalize: [true, false, false], punc: "." }
-  ],
-  Orta: [
-    // Özne + Yer Tamlayıcısı + Nesne + Yüklem
-    { pattern: ["ozne", "dolayli", "nesne", "yuklem"], capitalize: [true, false, false, false], punc: "." },
-    // Özne + Zarf Tümleci + Nesne + Yüklem
-    { pattern: ["ozne", "zarf", "nesne", "yuklem"], capitalize: [true, false, false, false], punc: "." },
-    // Özne + Zarf Tümleci + Yer Tamlayıcısı + Yüklem
-    { pattern: ["ozne", "zarf", "dolayli", "yuklem"], capitalize: [true, false, false, false], punc: "." }
-  ],
-  Zor: [
-    // Özne + Zarf Tümleci + Yer Tamlayıcısı + Nesne + Yüklem
-    { pattern: ["ozne", "zarf", "dolayli", "nesne", "yuklem"], capitalize: [true, false, false, false, false], punc: "." },
-    // Devrik: Zarf Tümleci + Yüklem + Özne + Yer Tamlayıcısı
-    { pattern: ["zarf", "yuklem", "ozne", "dolayli"], capitalize: [true, false, false, false], punc: "." },
-    // Devrik: Yer Tamlayıcısı + Nesne + Yüklem + Özne
-    { pattern: ["dolayli", "nesne", "yuklem", "ozne"], capitalize: [true, false, false, false], punc: "." }
-  ]
-};
+function getWorksheetSentencePool(difficulty) {
+  if (difficulty === "Karışık") {
+    return [...worksheetSentenceDatabase];
+  }
 
-// Select a random element from an array
+  return worksheetSentenceDatabase.filter(sentence => sentence.difficulty === difficulty);
+}
+
 function getRandomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Generate a single random sentence string with semantic consistency
 function generateRandomSentence(difficulty) {
-  let diff = difficulty;
-  if (diff === "Karışık") {
-    const diffs = ["Kolay", "Orta", "Zor"];
-    diff = diffs[Math.floor(Math.random() * diffs.length)];
-  }
-
-  // 1. Choose a random theme to preserve semantic consistency
-  const theme = generatorThemes[Math.floor(Math.random() * generatorThemes.length)];
-
-  // 2. Select template
-  const templates = generatorTemplates[diff];
-  const template = templates[Math.floor(Math.random() * templates.length)];
-
-  const sentenceParts = [];
-
-  template.pattern.forEach((partType, idx) => {
-    // Select only from the chosen theme's word list
-    let word = getRandomItem(theme[partType]);
-    
-    // Capitalize if template specifies (first word of sentence)
-    if (template.capitalize[idx]) {
-      word = word.charAt(0).toUpperCase() + word.slice(1);
-    } else {
-      // Lowercase first letter for non-initial words
-      // Keep proper names (starting after a space) intact — only touch charAt(0)
-      word = word.charAt(0).toLowerCase() + word.slice(1);
-    }
-
-    sentenceParts.push(word);
-  });
-
-  return sentenceParts.join(" ") + template.punc;
+  const pool = getWorksheetSentencePool(difficulty);
+  return getRandomItem(pool).text;
 }
 
-// Expose to window object for browser access
+window.worksheetSentenceDatabase = worksheetSentenceDatabase;
+window.getWorksheetSentencePool = getWorksheetSentencePool;
 window.generateRandomSentence = generateRandomSentence;

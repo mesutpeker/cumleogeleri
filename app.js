@@ -110,6 +110,8 @@ function initAccessibilityToggles() {
         playAudioFeedback("tap");
         closeSmartBoardSelector();
       }
+
+      refreshActiveSplitViews();
     });
   }
   
@@ -613,6 +615,98 @@ function cleanWordForSplit(word) {
   return word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
 }
 
+function updateSplitDividerUI(divider, isActive) {
+  if (!divider) return;
+
+  divider.classList.toggle("active", isActive);
+  divider.setAttribute("aria-pressed", isActive ? "true" : "false");
+  divider.innerHTML = isActive
+    ? '<span class="split-divider-icon">|</span><span class="split-divider-label">Böl</span>'
+    : '<span class="split-divider-icon split-divider-icon-idle">+</span>';
+}
+
+function renderWordSplitInterface(container, words, splitSet, options = {}) {
+  const {
+    isLocked = false,
+    wordDataAttr = "data-word-idx",
+    splitDataAttr = "data-split-after-idx"
+  } = options;
+
+  container.innerHTML = "";
+  container.classList.add("word-split-row");
+  container.classList.remove("word-split-mode");
+
+  words.forEach((wordItem, idx) => {
+    const wordText = typeof wordItem === "string" ? wordItem : wordItem.text;
+
+    const token = document.createElement("div");
+    token.className = "word-token word-split-token";
+    token.innerText = wordText;
+    token.setAttribute(wordDataAttr, idx);
+    container.appendChild(token);
+
+    if (idx < words.length - 1) {
+      const divider = document.createElement("button");
+      divider.type = "button";
+      divider.className = "split-divider-btn" + (splitSet.has(idx) ? " active" : "");
+      divider.setAttribute(splitDataAttr, idx);
+      divider.setAttribute("aria-label", `${idx + 1}. kelimeden sonra bölme noktası`);
+      divider.title = "Bölme noktası ekle / kaldır";
+      updateSplitDividerUI(divider, splitSet.has(idx));
+
+      if (!isLocked) {
+        divider.addEventListener("click", () => {
+          playAudioFeedback("tap");
+
+          if (splitSet.has(idx)) {
+            splitSet.delete(idx);
+          } else {
+            splitSet.add(idx);
+          }
+
+          updateSplitDividerUI(divider, splitSet.has(idx));
+          divider.classList.remove("split-success", "split-error");
+        });
+      } else {
+        divider.disabled = true;
+      }
+
+      container.appendChild(divider);
+    }
+  });
+}
+
+function renderSplitterWords() {
+  const sentenceBox = document.getElementById("splitter-sentence-box");
+  if (!sentenceBox || state.splitter.words.length === 0) return;
+
+  renderWordSplitInterface(sentenceBox, state.splitter.words, state.splitter.userSplits, {
+    isLocked: state.splitter.isSplitChecked
+  });
+}
+
+function renderCustomSplitWords() {
+  const box = document.getElementById("custom-sentence-box");
+  if (!box || state.custom.words.length === 0) return;
+
+  renderWordSplitInterface(box, state.custom.words, state.custom.userSplits, {
+    isLocked: state.custom.isSplitConfirmed,
+    wordDataAttr: "data-custom-word-idx"
+  });
+}
+
+function refreshActiveSplitViews() {
+  if (state.activeTab === "splitter" && state.splitter.words.length > 0) {
+    renderSplitterWords();
+  } else if (
+    state.activeTab === "custom" &&
+    state.custom.words.length > 0 &&
+    !state.custom.isSplitConfirmed
+  ) {
+    renderCustomSplitWords();
+  }
+}
+
 function loadSplitterSentence() {
   const sentence = state.sentences[state.splitter.currentIdx];
   const sentenceBox = document.getElementById("splitter-sentence-box");
@@ -640,34 +734,7 @@ function loadSplitterSentence() {
     idx: idx
   }));
 
-  sentenceBox.innerHTML = "";
-  
-  state.splitter.words.forEach((wObj, idx) => {
-    const token = document.createElement("div");
-    token.className = "word-token";
-    token.innerText = wObj.text;
-    token.setAttribute("data-word-idx", idx);
-    
-    // Toggle split after clicking token (adds slash after it)
-    token.addEventListener("click", () => {
-      if (state.splitter.isSplitChecked) return;
-      
-      // Cannot split after the last word
-      if (idx === state.splitter.words.length - 1) return;
-
-      playAudioFeedback("tap");
-
-      if (state.splitter.userSplits.has(idx)) {
-        state.splitter.userSplits.delete(idx);
-        token.classList.remove("split-point");
-      } else {
-        state.splitter.userSplits.add(idx);
-        token.classList.add("split-point");
-      }
-    });
-
-    sentenceBox.appendChild(token);
-  });
+  renderSplitterWords();
 }
 
 function getCorrectSplitIndices(sentence, wordsArray) {
@@ -693,22 +760,23 @@ function checkSplitterSplits() {
   
   // Check if user splits match correct splits exactly
   state.splitter.words.forEach((wObj, idx) => {
-    const token = sentenceBox.querySelector(`[data-word-idx="${idx}"]`);
     if (idx === state.splitter.words.length - 1) return;
-    
+
+    const divider = sentenceBox.querySelector(`[data-split-after-idx="${idx}"]`);
     const hasUserSplit = state.splitter.userSplits.has(idx);
     const hasCorrectSplit = correctSplits.has(idx);
-    
+
+    if (divider) {
+      divider.classList.remove("split-success", "split-error");
+    }
+
     if (hasUserSplit !== hasCorrectSplit) {
       allCorrect = false;
-      if (token && hasUserSplit) {
-        // Red slash border indicator
-        token.style.borderColor = "var(--color-error)";
+      if (divider && hasUserSplit) {
+        divider.classList.add("split-error");
       }
-    } else {
-      if (token && hasUserSplit) {
-        token.style.borderColor = "var(--color-success)";
-      }
+    } else if (divider && hasUserSplit) {
+      divider.classList.add("split-success");
     }
   });
 
@@ -733,19 +801,20 @@ function showSplitterAnswers() {
   const sentenceBox = document.getElementById("splitter-sentence-box");
   
   state.splitter.userSplits.clear();
-  
+
   state.splitter.words.forEach((wObj, idx) => {
-    const token = sentenceBox.querySelector(`[data-word-idx="${idx}"]`);
     if (idx === state.splitter.words.length - 1) return;
-    
-    if (token) {
-      token.style.borderColor = "rgba(255, 255, 255, 0.05)";
-      if (correctSplits.has(idx)) {
-        state.splitter.userSplits.add(idx);
-        token.classList.add("split-point");
-      } else {
-        token.classList.remove("split-point");
-      }
+
+    const divider = sentenceBox.querySelector(`[data-split-after-idx="${idx}"]`);
+    if (!divider) return;
+
+    divider.classList.remove("split-success", "split-error");
+
+    if (correctSplits.has(idx)) {
+      state.splitter.userSplits.add(idx);
+      updateSplitDividerUI(divider, true);
+    } else {
+      updateSplitDividerUI(divider, false);
     }
   });
 
@@ -1047,36 +1116,12 @@ function createCustomSentence() {
 
   // Show builder workspace
   document.getElementById("custom-card").style.display = "block";
-  document.getElementById("custom-helper-text").innerText = "1. Aşama: Kelimelerin arasına tıklayarak grupları belirleyin (bölme koyun). İşiniz bittiğinde buton ile onaylayın.";
+  document.getElementById("custom-helper-text").innerText = "1. Aşama: Kelimelerin arasındaki + düğmelerine dokunarak bölme noktalarını belirleyin. İşiniz bittiğinde buton ile onaylayın.";
   document.getElementById("custom-controls-1").style.display = "flex";
 
   const box = document.getElementById("custom-sentence-box");
   box.style.display = "flex";
-  box.innerHTML = "";
-
-  words.forEach((word, idx) => {
-    const token = document.createElement("div");
-    token.className = "word-token";
-    token.innerText = word;
-    token.setAttribute("data-custom-word-idx", idx);
-
-    token.addEventListener("click", () => {
-      if (state.custom.isSplitConfirmed) return;
-      if (idx === words.length - 1) return; // last word
-
-      playAudioFeedback("tap");
-
-      if (state.custom.userSplits.has(idx)) {
-        state.custom.userSplits.delete(idx);
-        token.classList.remove("split-point");
-      } else {
-        state.custom.userSplits.add(idx);
-        token.classList.add("split-point");
-      }
-    });
-
-    box.appendChild(token);
-  });
+  renderCustomSplitWords();
 }
 
 function confirmCustomSplits() {
@@ -1153,7 +1198,7 @@ function backToCustomSplits() {
   
   document.getElementById("custom-grouped-box").style.display = "none";
   document.getElementById("custom-controls-2").style.display = "none";
-  document.getElementById("custom-helper-text").innerText = "1. Aşama: Kelimelerin arasına tıklayarak grupları belirleyin (bölme koyun). İşiniz bittiğinde buton ile onaylayın.";
+  document.getElementById("custom-helper-text").innerText = "1. Aşama: Kelimelerin arasındaki + düğmelerine dokunarak bölme noktalarını belirleyin. İşiniz bittiğinde buton ile onaylayın.";
 }
 
 function saveCustomDiagram() {
@@ -1260,20 +1305,13 @@ function initWorksheet() {
 
 function generateWorksheet() {
   const difficulty = state.worksheet.difficulty;
-  const selected = [];
-  const generatedTexts = new Set();
-  
-  let attempts = 0;
-  while (selected.length < 15 && attempts < 200) {
-    attempts++;
-    const sentenceText = window.generateRandomSentence(difficulty);
-    if (!generatedTexts.has(sentenceText)) {
-      generatedTexts.add(sentenceText);
-      selected.push({
-        text: sentenceText
-      });
-    }
-  }
+  const pool = window.getWorksheetSentencePool
+    ? window.getWorksheetSentencePool(difficulty)
+    : [];
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, 15).map(sentence => ({
+    text: sentence.text
+  }));
 
   state.worksheet.sentences = selected;
   renderWorksheetPreview();
