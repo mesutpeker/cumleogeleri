@@ -1657,6 +1657,9 @@ details[open] .summary-indicator {
   }
 
   .worksheet-preview-wrapper {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
@@ -1687,6 +1690,15 @@ details[open] .summary-indicator {
     border-left-color: #000000 !important;
     border: 1px solid #000000 !important;
     border-left-width: 5px !important;
+  }
+
+  .worksheet-item,
+  .item-sentence,
+  .item-num,
+  .worksheet-sub-header,
+  .worksheet-footer,
+  .info-field {
+    color: #000000 !important;
   }
 
   .blank-line {
