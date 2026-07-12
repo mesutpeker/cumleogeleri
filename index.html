@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cümlenin Öğeleri - Etkileşimli Dil Bilgisi Uygulaması</title>
+  <meta name="description" content="Türkçe dil bilgisinde cümlenin öğeleri konusunu eğlenceli, pratik ve etkileşimli bir şekilde öğrenin. Öğe çözümleme, grup bölme ve eğlenceli test modları.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div>
+        <div class="logo-section">
+          <div class="logo-icon">
+            <!-- Book/Grammar Icon SVG -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>Dil Bilgisi</h1>
+            <span>Cümlenin Öğeleri</span>
+          </div>
+        </div>
+
+        <nav>
+          <ul class="nav-links">
+            <li class="nav-item">
+              <button class="nav-button active" data-target="analyzer">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                Öğe Çözümleme
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-button" data-target="splitter">
+                <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                Kelime Grubu Bölme
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-button" data-target="quiz">
+                <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.07-6c-.32.48-.68.85-1.07 1.1v.9h-2v-1.5c.78-.7 1.25-1.18 1.4-1.42.27-.42.4-.81.4-1.18 0-.66-.46-1.2-1.3-1.2-.85 0-1.24.58-1.38 1L7.3 6.9c.33-1.02 1.43-2.2 3.5-2.2 2.15 0 3.3 1.2 3.3 2.62 0 .76-.23 1.39-.73 2.1z"/></svg>
+                Pratik & Test
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-button" data-target="custom">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                Serbest Çizim
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-button" data-target="guide">
+                <svg viewBox="0 0 24 24"><path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.2 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/></svg>
+                Konu Anlatımı
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-button" data-target="worksheet">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                Çalışma Kağıdı
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="author-info">
+          <div class="author-avatar">E</div>
+          <div class="author-text">
+            <h4>Etkileşimli Eğitim</h4>
+            <p>Türkçe Dil Bilgisi Projesi</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Accessibility & Smart Board Controls -->
+      <div class="top-controls-bar">
+        <div class="control-toggle-group">
+          <label class="switch-container">
+            <input type="checkbox" id="smart-board-toggle">
+            <span class="switch-slider"></span>
+            <span class="switch-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="control-icon">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              Akıllı Tahta Modu
+            </span>
+          </label>
+          
+          <label class="switch-container">
+            <input type="checkbox" id="audio-feedback-toggle" checked>
+            <span class="switch-slider"></span>
+            <span class="switch-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="control-icon">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              Ses Efektleri
+            </span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 1. ANALYZER TAB -->
+      <section id="analyzer" class="tab-panel active">
+        <div class="panel-header">
+          <h2>Öğe Çözümleme</h2>
+          <p>Cümledeki kelime gruplarının üzerine tıklayarak doğru öğeyi atayın ve çözümlemeyi tamamlayın.</p>
+        </div>
+
+        <div class="alert-banner">
+          <div class="alert-icon">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+          </div>
+          <div class="alert-message">
+            <h4>Nasıl Çözülür?</h4>
+            <p>Önce cümlenin yüklemini bulun, ardından özneyi belirleyin. Diğer tüm öğeleri bulmak için soruları mutlaka <strong>yükleme</strong> yöneltin!</p>
+          </div>
+        </div>
+
+        <div class="control-bar">
+          <div class="difficulty-tabs" id="analyzer-difficulty">
+            <button class="diff-btn active" data-diff="all">Tümü</button>
+            <button class="diff-btn" data-diff="Kolay">Kolay</button>
+            <button class="diff-btn" data-diff="Orta">Orta</button>
+            <button class="diff-btn" data-diff="Zor">Zor</button>
+          </div>
+          <button class="btn-secondary" id="analyzer-reset">Sıfırla</button>
+        </div>
+
+        <div class="glass-card">
+          <div class="workspace-container">
+            <div class="sentence-container" id="analyzer-sentence-box">
+              <!-- Clickable word groups will be rendered here dynamically -->
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+              <button class="btn-primary" id="analyzer-check-btn">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                Doğrula
+              </button>
+              <button class="btn-secondary" id="analyzer-answer-btn">Cevabı Göster</button>
+              <button class="btn-primary" id="analyzer-next-btn" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+                Sonraki Cümle
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Explanations Panel -->
+        <div class="analysis-panel" id="analyzer-details-panel">
+          <h3 style="font-family: var(--font-title); margin-bottom: 1.25rem; font-size: 1.35rem;">Çözümleme Detayları</h3>
+          <div class="analysis-grid" id="analyzer-details-grid">
+            <!-- Explanation cards will be rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. SPLITTER TAB -->
+      <section id="splitter" class="tab-panel">
+        <div class="panel-header">
+          <h2>Kelime Grubu Bölme</h2>
+          <p>Kelimelerin arasına tıklayarak kelime gruplarını ayırın ( / sembolü koyun), ardından her gruba öğe atayın.</p>
+        </div>
+
+        <div class="alert-banner">
+          <div class="alert-icon">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+          </div>
+          <div class="alert-message">
+            <h4>Püf Noktası</h4>
+            <p>İsim tamlamaları, sıfat tamlamaları, deyimler ve birleşik fiiller cümlenin öğeleri bulunurken <strong>asla bölünmezler</strong>. Tek bir öğe kabul edilirler.</p>
+          </div>
+        </div>
+
+        <div class="control-bar">
+          <div></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-secondary" id="splitter-reset">Sıfırla</button>
+            <button class="btn-primary" id="splitter-check-btn">Bölmeleri Kontrol Et</button>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="workspace-container">
+            <div class="sentence-container word-split-mode" id="splitter-sentence-box">
+              <!-- Single words with click targets will be rendered here -->
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+              <button class="btn-primary" id="splitter-label-btn" disabled style="opacity: 0.6; cursor: not-allowed;">
+                Öğeleri Atamaya Başla
+              </button>
+              <button class="btn-secondary" id="splitter-answer-btn">Doğru Bölmeyi Göster</button>
+              <button class="btn-primary" id="splitter-next-btn" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Sonraki Cümle</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Group Labeling Section -->
+        <div id="splitter-labeling-area" style="display: none; margin-top: 2rem;" class="glass-card">
+          <h3 style="font-family: var(--font-title); margin-bottom: 1rem; font-size: 1.25rem;">2. Aşama: Bölünen Gruplara Öğe Ata</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Oluşturduğunuz gruplara tıklayarak öğe rollerini atayın.</p>
+          <div class="sentence-container" id="splitter-grouped-box"></div>
+          <div style="text-align: center; margin-top: 1.5rem;">
+            <button class="btn-primary" id="splitter-final-check" style="margin: 0 auto;">Öğeleri Doğrula</button>
+          </div>
+        </div>
+
+        <div class="analysis-panel" id="splitter-details-panel">
+          <h3 style="font-family: var(--font-title); margin-bottom: 1.25rem; font-size: 1.35rem;">Bölme ve Öğe Detayları</h3>
+          <div class="analysis-grid" id="splitter-details-grid"></div>
+        </div>
+      </section>
+
+      <!-- 3. QUIZ TAB -->
+      <section id="quiz" class="tab-panel">
+        <div class="panel-header">
+          <h2>Pratik & Test</h2>
+          <p>Sorulan öğeyi cümle içinde bularak kelimenin üzerine tıklayın. Hızlı ve doğru cevaplarla en yüksek skoru yapın!</p>
+        </div>
+
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-val" id="quiz-score">0</div>
+            <div class="stat-lbl">Skor</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="quiz-correct">0</div>
+            <div class="stat-lbl">Doğru</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="quiz-wrong">0</div>
+            <div class="stat-lbl">Yanlış</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="quiz-streak">0</div>
+            <div class="stat-lbl">Seri (Streak)</div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="workspace-container">
+            <div class="quiz-instruction" id="quiz-instruction-box">
+              Cümledeki <span class="target-role-badge badge-yuklem">Yüklem</span> öğesini bulunuz.
+            </div>
+
+            <div class="sentence-container" id="quiz-sentence-box">
+              <!-- Sentence words here -->
+            </div>
+
+            <div id="quiz-feedback" style="font-weight: 600; font-size: 1.1rem; text-align: center; min-height: 24px; margin-top: 1rem;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. CUSTOM BUILDER TAB -->
+      <section id="custom" class="tab-panel">
+        <div class="panel-header">
+          <h2>Serbest Çizim</h2>
+          <p>Kendi cümlenizi yazın, kelimeleri gruplara bölün ve her birine öğesini atayarak görsel analiz şemanızı oluşturun.</p>
+        </div>
+
+        <div class="sentence-builder-inputs">
+          <input type="text" id="custom-sentence-input" placeholder="Analiz etmek istediğiniz cümleyi buraya yazın..." autocomplete="off">
+          <button class="btn-primary" id="custom-create-btn">Cümleyi Yükle</button>
+        </div>
+
+        <div class="glass-card" id="custom-card" style="display: none;">
+          <div class="builder-workspace">
+            <div class="builder-helper-text" id="custom-helper-text">
+              1. Aşama: Kelimelerin arasına tıklayarak grupları belirleyin (bölme koyun). İşiniz bittiğinde buton ile onaylayın.
+            </div>
+            
+            <div class="sentence-container word-split-mode" id="custom-sentence-box" style="margin-bottom: 2rem;"></div>
+
+            <div style="display: flex; gap: 1rem;" id="custom-controls-1">
+              <button class="btn-primary" id="custom-confirm-split">Grupları Onayla</button>
+              <button class="btn-secondary" id="custom-reset">Sıfırla</button>
+            </div>
+
+            <div class="sentence-container" id="custom-grouped-box" style="display: none; margin-bottom: 2rem;"></div>
+
+            <div style="display: flex; gap: 1rem; display: none;" id="custom-controls-2">
+              <button class="btn-primary" id="custom-save-btn">Görsel Analizi Tamamla</button>
+              <button class="btn-secondary" id="custom-back-to-split">Geri Dön</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exported Custom Diagram -->
+        <div id="custom-diagram-area" style="display: none; margin-top: 2rem;" class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-family: var(--font-title); font-size: 1.25rem;">Cümle Analiz Şeması</h3>
+            <button class="btn-secondary" id="custom-print-btn" onclick="window.print()">Yazdır / PDF Kaydet</button>
+          </div>
+          
+          <div id="custom-diagram-content" style="padding: 2rem; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+            <!-- Render finished custom colored sentence here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. GUIDE TAB -->
+      <section id="guide" class="tab-panel">
+        <div class="panel-header">
+          <h2>Konu Anlatımı</h2>
+          <p>Cümlenin öğeleri konusunu detayları, soruları ve önemli püf noktaları ile öğrenin.</p>
+        </div>
+
+        <div class="guide-container">
+          <!-- Yüklem -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-yuklem);">Yüklem</span> Cümlenin Temel Öğesi</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Yüklem:</strong> Cümledeki işi, hareketi, yargıyı bildiren temel öğedir. Cümlenin kurucusu ve kalbidir. Diğer tüm öğeler yükleme sorulan sorularla bulunur.</p>
+              <br>
+              <p><strong>Özellikleri:</strong></p>
+              <ul>
+                <li>Çekimli bir fiil (örn: *geldi, okumalısın*) ya da ek fiil almış bir isim unsurundan (*öğretmendir, güzeldi*) oluşabilir.</li>
+                <li>Tek bir kelimeden oluşabileceği gibi deyimler (*göz kulak olmak*), birleşik fiiller (*yardım etmek*) veya tamlamalardan da oluşabilir.</li>
+              </ul>
+              <br>
+              <p><strong>Bulunuşu:</strong> Herhangi bir sorusu yoktur. Cümledeki yargıyı bildiren kelime veya kelime grubunu tespit ederek bulunur.</p>
+              <div class="colored-sentence">
+                <span class="colored-word">Kardeşim</span> <span class="colored-word">dün</span> <span class="colored-word">bize</span> <span class="colored-word col-yuklem">geldi</span>.
+              </div>
+            </div>
+          </details>
+
+          <!-- Özne -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-ozne);">Özne</span> İşi Yapan Öğe</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Özne:</strong> Yüklemin bildirdiği işi, hareketi gerçekleştiren ya da yargıya konu olan varlıktır.</p>
+              <br>
+              <p><strong>Özellikleri:</strong></p>
+              <ul>
+                <li><strong>Gerçek Özne:</strong> Cümlede açıkça yazılan öznedir.</li>
+                <li><strong>Gizli Özne:</strong> Cümlede yazılmayan, yüklemdeki şahıs ekinden anlaşılan öznedir.</li>
+                <li><strong>Sözde Özne:</strong> Edilgen fiilli cümlelerde işi yapan değil, işten etkilenen ögedir (örn: *Sınıf temizlendi* -> *Sınıf* sözde öznedir).</li>
+              </ul>
+              <br>
+              <p><strong>Soruları:</strong> Yükleme sorulan <strong>Kim?</strong> veya <strong>Ne?</strong> soruları ile bulunur.</p>
+              <div class="colored-sentence">
+                <span class="colored-word col-ozne">Kırmızı balonlar</span> <span class="colored-word">gökyüzüne</span> <span class="colored-word">uçtu</span>.
+              </div>
+            </div>
+          </details>
+
+          <!-- Nesne -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-belirtili-nesne);">Nesne</span> Eylemden Etkilenen Öğe</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Nesne (Düz Tümleç):</strong> Cümlede öznenin yaptığı işten etkilenen öğedir. İkiye ayrılır:</p>
+              <br>
+              <p><strong>1. Belirtili Nesne:</strong> Belirtme durumu eki (-i) alan nesnedir.</p>
+              <ul>
+                <li><strong>Soruları:</strong> Yükleme sorulan <strong>Neyi?</strong>, <strong>Kimi?</strong> soruları ile bulunur.</li>
+              </ul>
+              <div class="colored-sentence">
+                <span class="colored-word">Ali</span> <span class="colored-word col-nesne">kitaplarını</span> <span class="colored-word">masaya</span> <span class="colored-word">bıraktı</span>.
+              </div>
+              <br>
+              <p><strong>2. Belirtisiz Nesne:</strong> Yalın halde bulunan nesnedir. Eki yoktur.</p>
+              <ul>
+                <li><strong>Soruları:</strong> Özne bulunduktan sonra yükleme sorulan ikinci <strong>Ne?</strong> sorusu ile bulunur.</li>
+              </ul>
+              <div class="colored-sentence">
+                <span class="colored-word">Annem</span> <span class="colored-word col-nesne">lezzetli bir pasta</span> <span class="colored-word">pişirdi</span>.
+              </div>
+            </div>
+          </details>
+
+          <!-- Dolaylı Tümleç -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-dolayli-tumlec);">Dolaylı Tümleç</span> Yer Tamlayıcısı</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Dolaylı Tümleç (Yer Tamlayıcısı):</strong> Yüklemin bildirdiği yargının yöneldiği, bulunduğu veya çıktığı yeri bildiren öğedir. Her zaman yönelme (-e), bulunma (-de) veya ayrılma (-den) hal eklerini alır.</p>
+              <br>
+              <p><strong>Soruları:</strong></p>
+              <ul>
+                <li><strong>Kime?, Kimde?, Kimden?</strong></li>
+                <li><strong>Neye?, Neyde?, Neyden?</strong></li>
+                <li><strong>Nereye?, Nerede?, Nereden?</strong></li>
+              </ul>
+              <div class="colored-sentence">
+                <span class="colored-word">Çocuklar</span> <span class="colored-word col-dolayli">bahçede</span> <span class="colored-word">neşeyle</span> <span class="colored-word">oynuyor</span>.
+              </div>
+            </div>
+          </details>
+
+          <!-- Zarf Tümleci -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-zarf-tumleci);">Zarf Tümleci</span> Durum, Zaman, Miktar Bildiren Öğe</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Zarf Tümleci (Belirteç Tümleci):</strong> Yüklemin zamanını, durumunu, miktarını, yönünü veya sebebini bildiren tümleçtir.</p>
+              <br>
+              <p><strong>Soruları:</strong> Yükleme sorulan <strong>Nasıl?, Ne zaman?, Ne kadar?, Neden?, Niçin?, Nereye? (Yalın yön bildirenler: içeri, dışarı vb.)</strong> soruları ile bulunur.</p>
+              <div class="colored-sentence">
+                <span class="colored-word">Öğretmen</span> <span class="colored-word col-zarf">konuyu hızlıca</span> <span class="colored-word">anlatıp</span> <span class="colored-word col-zarf">dışarı</span> <span class="colored-word">çıktı</span>.
+              </div>
+              <p>⚠️ <strong>Önemli Uyarı:</strong> "içeri, dışarı, aşağı, yukarı" gibi yer-yön bildiren kelimeler yalın halde ise <strong>zarf tümleci</strong>; hal eki almışlarsa ("içeriye", "dışarıda", "aşağıdan") <strong>dolaylı tümleç</strong> olurlar.</p>
+            </div>
+          </details>
+
+          <!-- Edat Tümleci -->
+          <details class="grammar-accordion" name="guide-accordion">
+            <summary class="grammar-summary">
+              <span><span class="element-tag" style="background-color: var(--color-edat-tumleci);">Edat Tümleci</span> Vasıta, Birliktelik, Amaç Bildiren Öğe</span>
+              <div class="summary-indicator">▼</div>
+            </summary>
+            <div class="accordion-content">
+              <p><strong>Edat Tümleci (İlgeç Tümleci):</strong> Yüklemin ne ile, kiminle, hangi amaçla veya ne için yapıldığını gösteren öğedir. Genellikle "ile", "için" gibi edatlarla kurulmuş kelime gruplarıdır.</p>
+              <br>
+              <p><strong>Soruları:</strong> Yükleme sorulan <strong>Ne ile?, Kiminle?, Ne için?, Kimin için?</strong> soruları ile bulunur.</p>
+              <div class="colored-sentence">
+                <span class="colored-word">O</span> <span class="colored-word col-edat">okula babasının arabasıyla</span> <span class="colored-word">giderdi</span>.
+              </div>
+              <p>ℹ️ *Not: Bazı kaynaklar edat tümleçlerini zarf tümleçlerinin bir alt başlığı olarak değerlendirir, ancak dil bilgisi sınavlarında ayrı bir öğe olarak sorulabilmektedir.*</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 6. WORKSHEET GENERATOR TAB -->
+      <section id="worksheet" class="tab-panel">
+        <div class="panel-header">
+          <h2>Çalışma Kağıdı Üretici</h2>
+          <p>Seçeceğiniz zorluk seviyesine göre rastgele 15 cümleden oluşan, çıktı almaya veya PDF olarak kaydetmeye uygun çalışma kağıdı üretin.</p>
+        </div>
+
+        <div class="control-bar no-print">
+          <div class="difficulty-tabs" id="worksheet-difficulty">
+            <button class="diff-btn active" data-diff="Kolay">Kolay</button>
+            <button class="diff-btn" data-diff="Orta">Orta</button>
+            <button class="diff-btn" data-diff="Zor">Zor</button>
+            <button class="diff-btn" data-diff="Karışık">Karışık (Tümü)</button>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-primary" id="worksheet-generate-btn">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
+              </svg>
+              Yeni Cümleler Üret
+            </button>
+            <button class="btn-secondary" id="worksheet-print-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+              </svg>
+              Yazdır / PDF Kaydet
+            </button>
+          </div>
+        </div>
+
+        <!-- A4 Page Preview Area -->
+        <div class="worksheet-preview-wrapper no-print">
+          <div class="worksheet-paper" id="worksheet-print-area">
+            <div class="worksheet-header">
+              <h1 class="worksheet-title">CÜMLENİN ÖĞELERİ ÇALIŞMA KAĞIDI</h1>
+              <div class="worksheet-sub-header">
+                <span id="worksheet-meta-difficulty">Zorluk Seviyesi: Kolay</span>
+                <span id="worksheet-meta-date">Tarih: 12.07.2026</span>
+              </div>
+            </div>
+
+            <div class="worksheet-student-info">
+              <div class="info-field"><strong>Adı Soyadı:</strong> <span>....................................................................</span></div>
+              <div class="info-field"><strong>Sınıfı / No:</strong> <span>........................................</span></div>
+            </div>
+
+            <div class="worksheet-instructions">
+              <strong>Yönerge:</strong> Aşağıdaki cümlelerin öğelerini bulunuz. Cümleleri öğelerine bölüp kelime veya kelime gruplarının altına hangi öğe olduğunu (Yüklem, Özne, Nesne, Yer Tamlayıcısı, Zarf Tümleci) yazınız.
+            </div>
+
+            <div class="worksheet-sentences-list" id="worksheet-preview-list">
+              <!-- 15 random sentences rendered here dynamically -->
+            </div>
+            
+            <div class="worksheet-footer">
+              Dil Bilgisi Etkileşimli Eğitim Portalı - cümleninöğeleri.app
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+    </main>
+  </div>
+
+  <!-- Smart Board Floating Role Selector Panel -->
+  <div id="smart-board-selector" class="sb-selector-panel">
+    <div class="sb-selector-header">
+      <span class="sb-selector-title">Öğe Seçiniz: <span id="sb-selected-word" class="sb-highlight-word">Kelime</span></span>
+      <button class="sb-close-btn" id="sb-selector-close" title="Kapat">&times;</button>
+    </div>
+    <div class="sb-selector-grid">
+      <button class="sb-role-btn" data-role="yuklem" style="--role-color: var(--color-yuklem);">Yüklem</button>
+      <button class="sb-role-btn" data-role="ozne" style="--role-color: var(--color-ozne);">Özne</button>
+      <button class="sb-role-btn" data-role="belirtili_nesne" style="--role-color: var(--color-belirtili-nesne);">B.li Nesne</button>
+      <button class="sb-role-btn" data-role="belirtisiz_nesne" style="--role-color: var(--color-belirtisiz-nesne);">B.siz Nesne</button>
+      <button class="sb-role-btn" data-role="dolayli_tumlec" style="--role-color: var(--color-dolayli-tumlec);">Yer Tamlayıcı</button>
+      <button class="sb-role-btn" data-role="zarf_tumleci" style="--role-color: var(--color-zarf-tumleci);">Zarf Tümleci</button>
+      <button class="sb-role-btn" data-role="edat_tumleci" style="--role-color: var(--color-edat-tumleci);">Edat Tümleci</button>
+      <button class="sb-role-btn" data-role="cdu" style="--role-color: var(--color-cdu);">Cümle Dışı</button>
+    </div>
+    <div class="sb-selector-actions">
+      <button class="sb-action-btn clear-btn" id="sb-selector-clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        Öğeyi Temizle
+      </button>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas overlay -->
+  <div id="confetti-container" class="confetti-wrapper"></div>
+
+  <!-- Javascript Logic -->
+  <script src="sentences.js"></script>
+  <script src="generator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
